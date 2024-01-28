@@ -3,14 +3,15 @@ import 'package:quiz_app/quiz_questions.dart';
 
 class Qustions extends StatefulWidget {
   const Qustions({super.key, required this.onSelectedAnswers});
-  final Function (String answer) onSelectedAnswers;
+  final Function(String answer) onSelectedAnswers;
   @override
   State<StatefulWidget> createState() => _QustionState();
 }
 
 class _QustionState extends State<Qustions> {
   var currentQustionsIndex = 0;
-  void answerToQustions() {
+  void answerToQustions(String answer) {
+    widget.onSelectedAnswers(answer);
     setState(() {
       currentQustionsIndex++;
     });
@@ -19,38 +20,30 @@ class _QustionState extends State<Qustions> {
   @override
   Widget build(context) {
     final currentQustions = questions[currentQustionsIndex];
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: [
-            Color.fromARGB(255, 240, 228, 9),
-            Colors.orange
-            // Color.fromARGB(255, 246, 154, 34),
-          ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-        ),
-        child: SizedBox(
-          width: double.infinity,
-          child: Container(
-            margin: const EdgeInsets.all(40),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  currentQustions.text,
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                ...currentQustions.getShuffledAnswers().map((e) {
-                  return AnswerButton(answer: e, onTap: answerToQustions);
-                })
-              ],
+    return SizedBox(
+      width: double.infinity,
+      child: Container(
+        margin: const EdgeInsets.all(40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              currentQustions.text,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
-          ),
+            const SizedBox(
+              height: 30,
+            ),
+            ...currentQustions.getShuffledAnswers().map((e) {
+              return AnswerButton(
+                  answer: e,
+                  onTap: () {
+                    answerToQustions(e);
+                  });
+            })
+          ],
         ),
       ),
     );
